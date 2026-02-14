@@ -23,12 +23,11 @@ const (
 
 // companyBase contains fields always visible to both DB and Frontend.
 type CompanyBase struct {
-	Name      string      `json:"name"`
-	Area      ProductArea `json:"area"`
-	TANNSSID  string      `json:"tannssid"`
-	Comments  string      `json:"comments"`
-	IsActive  bool        `json:"is_active"`
-	DeletedAt *time.Time  `json:"deleted_at"`
+	Name     string      `json:"name"`
+	Area     ProductArea `json:"area"`
+	TANSSID  string      `json:"tannssid"`
+	Comments []string    `json:"comments"`
+	IsActive bool        `json:"is_active"`
 }
 
 // ============================================================================
@@ -39,8 +38,9 @@ type CompanyBase struct {
 type Company struct {
 	ID          uuid.UUID `json:"id"`
 	CompanyBase CompanyBase
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at"`
 }
 
 // Sanitize prepares the company data for the frontend.
@@ -65,25 +65,33 @@ type CompanyResponse struct {
 
 // CreateCompanyRequest is the payload for adding a new company.
 type CreateCompanyRequest struct {
-	Name     string      `json:"name,omitempty"`
-	Area     ProductArea `json:"area,omitempty"`
-	License  string      `json:"license,omitempty"`
+	Name     string      `json:"name,omitempty" validate:"required"`
+	Area     ProductArea `json:"area,omitempty" validate:"required"`
+	TANSSID  string      `json:"tannssid,omitempty" validate:"required"`
 	IsActive *bool       `json:"is_active,omitempty"`
-	Comments *string     `json:"comments,omitempty"`
+	Comments *[]string   `json:"comments,omitempty"`
 }
 
 // UpdateCompanyRequest allows partial updates.
 type UpdateCompanyRequest struct {
-	ID       uuid.UUID    `json:"id"`
+	ID       uuid.UUID    `json:"id" validate:"required"`
 	Name     *string      `json:"name,omitempty"`
-	TANSSID  *string      `json:"tanssid,omitempty"`
+	TANSSID  *string      `json:"tannssid,omitempty"`
 	Area     *ProductArea `json:"area,omitempty"`
-	License  *string      `json:"license,omitempty"`
 	IsActive *bool        `json:"is_active,omitempty"`
-	Comments *string      `json:"comments,omitempty"`
+	Comments *[]string    `json:"comments,omitempty"`
+}
+
+// GetCompanyRequest is the payload for getting a company.
+type GetCompanyRequest struct {
+	ID uuid.UUID `json:"id" validate:"required"`
 }
 
 // DeleteCompanyRequest for soft deleting a company.
 type DeleteCompanyRequest struct {
-	ID uuid.UUID `json:"id"`
+	ID uuid.UUID `json:"id" validate:"required"`
+}
+
+type ListCompanySubscriptionsRequest struct {
+	CompanyID uuid.UUID `json:"company_id" validate:"required"`
 }
