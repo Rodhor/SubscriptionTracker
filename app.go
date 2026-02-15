@@ -1,18 +1,23 @@
 package main
 
 import (
+	Backend "Groundwork/backend"
 	"context"
 	"fmt"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx     context.Context
+	Backend *Backend.Backend
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		// Inject backend into app
+		Backend: Backend.NewBackend(),
+	}
 }
 
 // startup is called at application startup
