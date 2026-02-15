@@ -36,7 +36,7 @@ type SubscriptionBase struct {
 	Features  []string           `json:"features"`
 	Status    SubscriptionStatus `json:"status"`
 	StartDate time.Time          `json:"start_date"`
-	EndDate   time.Time          `json:"end_date"`
+	EndDate   *time.Time         `json:"end_date"`
 	AutoRenew bool               `json:"auto_renew"`
 }
 
@@ -100,5 +100,10 @@ type UpdateSubscriptionRequest struct {
 
 // DeleteSubscriptionRequest for soft deleting a subscription.
 type DeleteSubscriptionRequest struct {
+	ID uuid.UUID `json:"id"`
+}
+
+// GetSubscriptionRequest for retrieving a singular subscription
+type GetSubscriptionRequest struct {
 	ID uuid.UUID `json:"id"`
 }

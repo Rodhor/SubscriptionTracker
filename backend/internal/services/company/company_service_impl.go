@@ -138,7 +138,6 @@ func (c *companyService) UpdateCompanyService(ctx context.Context, req *domain.U
 	}
 
 	now := time.Now()
-
 	if err := c.queries.UpdateCompany(ctx, req, now); err != nil {
 		return err
 	}

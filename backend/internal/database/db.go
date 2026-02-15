@@ -17,6 +17,7 @@ type Database struct {
 }
 
 var ErrDuplicateCompany = errors.New("TANSSID already exists in database")
+var ErrDuplicateSubscription = errors.New("SubscriptionLicense already exists in database")
 var ErrNotFound = errors.New("not found")
 
 func NewDB() *Database {
@@ -67,6 +68,16 @@ func (db *Database) DeleteCompany(ctx context.Context, ID uuid.UUID, deletionTim
 
 	company.DeletedAt = &deletionTime
 	company.UpdatedAt = deletionTime
+
+	// Cascade delete subscriptions
+	for _, subscription := range db.subscriptions {
+		if subscription.CompanyID == company.ID {
+			if subscription.DeletedAt == nil {
+				subscription.DeletedAt = &deletionTime
+				subscription.UpdatedAt = deletionTime
+			}
+		}
+	}
 
 	return nil
 }
@@ -176,21 +187,138 @@ func (db *Database) UpdateCompany(ctx context.Context, req *domain.UpdateCompany
 // Subscription functionality
 // ============================================================================
 
-func (db *Database) CreateSubscription() {
-	panic("Not implemented")
+// Creates a new subscription - errors out if the license already exists
+func (db *Database) CreateSubscription(ctx context.Context, sub *domain.Subscription) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
+	db.mu.Lock()
+	defer db.mu.Unlock()
+
+	// 1. Verify Company exists and is not deleted
+	company, ok := db.companies[sub.CompanyID]
+	if !ok || company.DeletedAt != nil {
+		return ErrNotFound
+	}
+
+	// 2. Uniqueness check for License
+	for _, existing := range db.subscriptions {
+		if existing.SubscriptionBase.License == sub.SubscriptionBase.License && existing.DeletedAt == nil {
+			return ErrDuplicateSubscription
+		}
+	}
+
+	db.subscriptions[sub.ID] = sub
+	return nil
 }
 
-func (db *Database) UpdateSubscription() {
-	panic("Not implemented")
+// Updates an existing subscription - errors out if the updated license already exists
+func (db *Database) UpdateSubscription(ctx context.Context, req *domain.UpdateSubscriptionRequest, updatingTime time.Time) error {
+	// Check for context cancellation
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
+	// proceed with the update of the company
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	subscription, ok := db.subscriptions[req.ID]
+	if !ok || subscription.DeletedAt != nil {
+		return ErrNotFound
+	}
+
+	// If License is provided, check if it's already in use by another subscription
+	if req.License != nil {
+		for _, s := range db.subscriptions {
+			if s.SubscriptionBase.License == *req.License && s.ID != req.ID && s.DeletedAt == nil {
+				return ErrDuplicateSubscription
+			}
+		}
+		subscription.SubscriptionBase.License = *req.License
+	}
+
+	if req.Name != nil {
+		subscription.SubscriptionBase.Name = *req.Name
+	}
+	if req.Tier != nil {
+		subscription.SubscriptionBase.Tier = *req.Tier
+	}
+	if req.Features != nil {
+		subscription.SubscriptionBase.Features = *req.Features
+	}
+	if req.Status != nil {
+		subscription.SubscriptionBase.Status = *req.Status
+	}
+	if req.StartDate != nil {
+		subscription.SubscriptionBase.StartDate = *req.StartDate
+	}
+	if req.EndDate != nil {
+		subscription.SubscriptionBase.EndDate = req.EndDate
+	}
+	if req.AutoRenew != nil {
+		subscription.SubscriptionBase.AutoRenew = *req.AutoRenew
+	}
+	subscription.UpdatedAt = updatingTime
+
+	return nil
 }
 
-func (db *Database) DeleteSubscription() {
-	panic("Not implemented")
+// Softdeletes a subscription
+func (db *Database) DeleteSubscription(ctx context.Context, ID uuid.UUID, deletionTime time.Time) error {
+	// Check for context cancellation
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+
+	// proceed with the deletion of the company
+	db.mu.Lock()
+	defer db.mu.Unlock()
+	subscription, ok := db.subscriptions[ID]
+	if !ok {
+		return ErrNotFound
+	}
+
+	subscription.DeletedAt = &deletionTime
+	subscription.UpdatedAt = deletionTime
+
+	return nil
 }
 
-func (db *Database) GetSubscription() {
-	panic("Not implemented")
+// Retrieves a subscription by ID
+func (db *Database) GetSubscription(ctx context.Context, ID uuid.UUID) (*domain.Subscription, error) {
+	// Check for context cancellation
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
+	// proceed with the retrieval of the company
+	db.mu.RLock()
+	defer db.mu.RUnlock()
+	subscription, ok := db.subscriptions[ID]
+	if !ok || subscription.DeletedAt != nil {
+		return nil, ErrNotFound
+	}
+
+	return subscription, nil
 }
-func (db *Database) ListSubscriptions() {
-	panic("Not implemented")
+
+// Retrieves all subscriptions
+func (db *Database) ListSubscriptions(ctx context.Context) ([]*domain.Subscription, error) {
+	// Check for context cancellation
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+
+	// proceed with the retrieval of the companies
+	db.mu.RLock()
+	defer db.mu.RUnlock()
+	subscriptions := make([]*domain.Subscription, 0, len(db.subscriptions))
+	for _, subscription := range db.subscriptions {
+		if subscription.DeletedAt == nil {
+			subscriptions = append(subscriptions, subscription)
+		}
+	}
+
+	return subscriptions, nil
 }

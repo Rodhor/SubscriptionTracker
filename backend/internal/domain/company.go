@@ -58,9 +58,9 @@ func (c *Company) Sanitize() *CompanyResponse {
 
 // CompanyResponse is what the frontend gets.
 type CompanyResponse struct {
-	ID          uuid.UUID `json:"id"`
-	CompanyBase CompanyBase
-	CreatedAt   time.Time `json:"created_at"`
+	ID          uuid.UUID   `json:"id"`
+	CompanyBase CompanyBase `json:",inline"`
+	CreatedAt   time.Time   `json:"created_at"`
 }
 
 // CreateCompanyRequest is the payload for adding a new company.
