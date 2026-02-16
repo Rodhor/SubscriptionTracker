@@ -7,8 +7,14 @@ export const useAppStore = defineStore("app", {
   }),
 });
 
-export const useAuthStore = defineStore("auth", {
+export const CompanyStore = defineStore("company", {
   state: () => ({
-    user: null as null | { id: number; name: string; email: string },
+    //
+  }),
+});
+
+export const SubscriptionStore = defineStore("subscription", {
+  state: () => ({
+    //
   }),
 });

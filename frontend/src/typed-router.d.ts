@@ -19,9 +19,11 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
-    '/about': RouteRecordInfo<'/about', '/about', Record<never, never>, Record<never, never>>,
-    '/participants': RouteRecordInfo<'/participants', '/participants', Record<never, never>, Record<never, never>>,
-    '/tasklist': RouteRecordInfo<'/tasklist', '/tasklist', Record<never, never>, Record<never, never>>,
+    '/companies/': RouteRecordInfo<'/companies/', '/companies', Record<never, never>, Record<never, never>>,
+    '/companies/[id]': RouteRecordInfo<'/companies/[id]', '/companies/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    '/settings': RouteRecordInfo<'/settings', '/settings', Record<never, never>, Record<never, never>>,
+    '/subscriptions/': RouteRecordInfo<'/subscriptions/', '/subscriptions', Record<never, never>, Record<never, never>>,
+    '/subscriptions/[id]': RouteRecordInfo<'/subscriptions/[id]', '/subscriptions/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
   }
 
   /**
@@ -39,16 +41,24 @@ declare module 'vue-router/auto-routes' {
       routes: '/'
       views: never
     }
-    'src/pages/about.vue': {
-      routes: '/about'
+    'src/pages/companies/index.vue': {
+      routes: '/companies/'
       views: never
     }
-    'src/pages/participants.vue': {
-      routes: '/participants'
+    'src/pages/companies/[id].vue': {
+      routes: '/companies/[id]'
       views: never
     }
-    'src/pages/tasklist.vue': {
-      routes: '/tasklist'
+    'src/pages/settings.vue': {
+      routes: '/settings'
+      views: never
+    }
+    'src/pages/subscriptions/index.vue': {
+      routes: '/subscriptions/'
+      views: never
+    }
+    'src/pages/subscriptions/[id].vue': {
+      routes: '/subscriptions/[id]'
       views: never
     }
   }

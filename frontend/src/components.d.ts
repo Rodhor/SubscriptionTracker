@@ -12,11 +12,16 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    CompanyList: typeof import('./components/CompanyList.vue')['default']
+    CreateCompany: typeof import('./components/dialogs/CreateCompany.vue')['default']
+    CreateSubscription: typeof import('./components/dialogs/CreateSubscription.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     NavBar: typeof import('./components/NavBar.vue')['default']
+    OverviewList: typeof import('./components/OverviewList.vue')['default']
     ParticipantList: typeof import('./components/ParticipantList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SubscriptionList: typeof import('./components/SubscriptionList.vue')['default']
     TaskList: typeof import('./components/TaskList.vue')['default']
   }
 }
