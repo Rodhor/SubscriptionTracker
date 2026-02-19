@@ -6,9 +6,18 @@ import (
 )
 
 type SubscriptionCommand interface {
-	CreateSubscriptionCommand(req *domain.CreateSubscriptionRequest) *commandUtils.Response
-	GetSubscriptionCommand(req *domain.GetSubscriptionRequest) *commandUtils.Response
-	ListSubscriptionsCommand() *commandUtils.Response
-	UpdateSubscriptionCommand(req *domain.UpdateSubscriptionRequest) *commandUtils.Response
-	DeleteSubscriptionCommand(req *domain.DeleteSubscriptionRequest) *commandUtils.Response
+	// Returns the newly created subscription
+	CreateSubscriptionCommand(req *domain.CreateSubscriptionRequest) *commandUtils.Response[*domain.SubscriptionResponse]
+
+	// Returns a specific subscription
+	GetSubscriptionCommand(req *domain.GetSubscriptionRequest) *commandUtils.Response[*domain.SubscriptionResponse]
+
+	// Returns a list of all subscriptions
+	ListSubscriptionsCommand() *commandUtils.Response[[]*domain.SubscriptionResponse]
+
+	// Returns any (nil data) because you opted for no return upon updating
+	UpdateSubscriptionCommand(req *domain.UpdateSubscriptionRequest) *commandUtils.Response[any]
+
+	// Returns any (nil data) as is standard for deletion
+	DeleteSubscriptionCommand(req *domain.DeleteSubscriptionRequest) *commandUtils.Response[any]
 }

@@ -8,22 +8,34 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type Response struct {
+type Response[T any] struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-	Data    any    `json:"data"`
+	Data    T      `json:"data"`
 }
 
-func ErrorResponse(err error) *Response {
-	return &Response{
+// Existing ErrorResponse: Good for commands returning *Response[any] (e.g., Delete)
+func ErrorResponse(err error) *Response[any] {
+	return &Response[any]{
 		Status:  MapErrorToStatus(err),
 		Message: err.Error(),
 		Data:    nil,
 	}
 }
 
-func SuccessResponse(message string, status int, data any) *Response {
-	return &Response{
+// ErrorResponseTyped: Essential for commands returning specific types
+func ErrorResponseTyped[T any](err error) *Response[T] {
+	var zero T // This will be nil for pointers and slices
+	return &Response[T]{
+		Status:  MapErrorToStatus(err),
+		Message: err.Error(),
+		Data:    zero,
+	}
+}
+
+// SuccessResponse takes a type T and returns a Response of that type
+func SuccessResponse[T any](message string, status int, data T) *Response[T] {
+	return &Response[T]{
 		Status:  status,
 		Message: message,
 		Data:    data,

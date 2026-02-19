@@ -23,90 +23,77 @@ func NewSubscriptionCommand(svc SubscriptionService.SubscriptionService) Subscri
 	}
 }
 
-// CreateSubscriptionCommand implements [SubscriptionCommand].
-func (s *subscriptionCommand) CreateSubscriptionCommand(req *domain.CreateSubscriptionRequest) *commandUtils.Response {
-	// Create context with timeout of 5 seconds
+// CreateSubscriptionCommand returns a specific pointer
+func (s *subscriptionCommand) CreateSubscriptionCommand(req *domain.CreateSubscriptionRequest) *commandUtils.Response[*domain.SubscriptionResponse] {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// Validate request
 	if err := validate.Struct(req); err != nil {
-		return commandUtils.ErrorResponse(err)
+		return commandUtils.ErrorResponseTyped[*domain.SubscriptionResponse](err)
 	}
 
-	// If request is valid, proceed with creating subscription
 	resp, err := s.service.CreateSubscriptionService(ctx, req)
 	if err != nil {
-		return commandUtils.ErrorResponse(err)
+		return commandUtils.ErrorResponseTyped[*domain.SubscriptionResponse](err)
 	}
 	return commandUtils.SuccessResponse("Subscription created successfully", http.StatusCreated, resp)
 }
 
-// DeleteSubscriptionCommand implements [SubscriptionCommand].
-func (s *subscriptionCommand) DeleteSubscriptionCommand(req *domain.DeleteSubscriptionRequest) *commandUtils.Response {
-	// Create context with timeout of 5 seconds
+// DeleteSubscriptionCommand returns [any] (nil data)
+func (s *subscriptionCommand) DeleteSubscriptionCommand(req *domain.DeleteSubscriptionRequest) *commandUtils.Response[any] {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// Validate request
 	if err := validate.Struct(req); err != nil {
 		return commandUtils.ErrorResponse(err)
 	}
 
-	// If request is valid, proceed with deleting subscription
 	err := s.service.DeleteSubscriptionService(ctx, req)
 	if err != nil {
 		return commandUtils.ErrorResponse(err)
 	}
-	return commandUtils.SuccessResponse("Subscription deleted successfully", http.StatusOK, nil)
+	return commandUtils.SuccessResponse[any]("Subscription deleted successfully", http.StatusOK, nil)
 }
 
-// GetSubscriptionCommand implements [SubscriptionCommand].
-func (s *subscriptionCommand) GetSubscriptionCommand(req *domain.GetSubscriptionRequest) *commandUtils.Response {
-	// Create context with timeout of 5 seconds
+// GetSubscriptionCommand returns a specific pointer
+func (s *subscriptionCommand) GetSubscriptionCommand(req *domain.GetSubscriptionRequest) *commandUtils.Response[*domain.SubscriptionResponse] {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// Validate request
 	if err := validate.Struct(req); err != nil {
-		return commandUtils.ErrorResponse(err)
+		return commandUtils.ErrorResponseTyped[*domain.SubscriptionResponse](err)
 	}
 
-	// If request is valid, proceed with getting subscription
 	resp, err := s.service.GetSubscriptionService(ctx, req)
 	if err != nil {
-		return commandUtils.ErrorResponse(err)
+		return commandUtils.ErrorResponseTyped[*domain.SubscriptionResponse](err)
 	}
 	return commandUtils.SuccessResponse("Subscription retrieved successfully", http.StatusOK, resp)
 }
 
-// ListSubscriptionsCommand implements [SubscriptionCommand].
-func (s *subscriptionCommand) ListSubscriptionsCommand() *commandUtils.Response {
-	// Create context with timeout of 5 seconds
+// ListSubscriptionsCommand returns a slice
+func (s *subscriptionCommand) ListSubscriptionsCommand() *commandUtils.Response[[]*domain.SubscriptionResponse] {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	resp, err := s.service.ListSubscriptionsService(ctx)
 	if err != nil {
-		return commandUtils.ErrorResponse(err)
+		return commandUtils.ErrorResponseTyped[[]*domain.SubscriptionResponse](err)
 	}
 	return commandUtils.SuccessResponse("Subscriptions retrieved successfully", http.StatusOK, resp)
 }
 
-// UpdateSubscriptionCommand implements [SubscriptionCommand].
-func (s *subscriptionCommand) UpdateSubscriptionCommand(req *domain.UpdateSubscriptionRequest) *commandUtils.Response {
-	// Create context with timeout of 5 seconds
+// UpdateSubscriptionCommand returns [any] (nil data)
+func (s *subscriptionCommand) UpdateSubscriptionCommand(req *domain.UpdateSubscriptionRequest) *commandUtils.Response[any] {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// Validate request
 	if err := validate.Struct(req); err != nil {
 		return commandUtils.ErrorResponse(err)
 	}
 
-	// If request is valid, proceed with updating subscription
 	if err := s.service.UpdateSubscriptionService(ctx, req); err != nil {
 		return commandUtils.ErrorResponse(err)
 	}
-	return commandUtils.SuccessResponse("Subscription updated successfully", http.StatusOK, nil)
+	return commandUtils.SuccessResponse[any]("Subscription updated successfully", http.StatusOK, nil)
 }

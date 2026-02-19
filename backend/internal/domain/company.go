@@ -60,7 +60,7 @@ func (c *Company) Sanitize() *CompanyResponse {
 type CompanyResponse struct {
 	ID          uuid.UUID   `json:"id"`
 	CompanyBase CompanyBase `json:",inline"`
-	CreatedAt   time.Time   `json:"created_at"`
+	CreatedAt   time.Time   `json:"created_at" ts_type:"string"`
 }
 
 // CreateCompanyRequest is the payload for adding a new company.
