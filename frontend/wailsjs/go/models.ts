@@ -1,12 +1,148 @@
 export namespace commandUtils {
 	
-	export class Response {
+	export class Response__Groundwork_backend_internal_domain_CompanyResponse_ {
+	    status: number;
+	    message: string;
+	    data?: domain.CompanyResponse;
+	
+	    static createFrom(source: any = {}) {
+	        return new Response__Groundwork_backend_internal_domain_CompanyResponse_(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.status = source["status"];
+	        this.message = source["message"];
+	        this.data = this.convertValues(source["data"], domain.CompanyResponse);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Response__Groundwork_backend_internal_domain_SubscriptionResponse_ {
+	    status: number;
+	    message: string;
+	    data?: domain.SubscriptionResponse;
+	
+	    static createFrom(source: any = {}) {
+	        return new Response__Groundwork_backend_internal_domain_SubscriptionResponse_(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.status = source["status"];
+	        this.message = source["message"];
+	        this.data = this.convertValues(source["data"], domain.SubscriptionResponse);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Response____Groundwork_backend_internal_domain_CompanyResponse_ {
+	    status: number;
+	    message: string;
+	    data: domain.CompanyResponse[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Response____Groundwork_backend_internal_domain_CompanyResponse_(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.status = source["status"];
+	        this.message = source["message"];
+	        this.data = this.convertValues(source["data"], domain.CompanyResponse);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Response____Groundwork_backend_internal_domain_SubscriptionResponse_ {
+	    status: number;
+	    message: string;
+	    data: domain.SubscriptionResponse[];
+	
+	    static createFrom(source: any = {}) {
+	        return new Response____Groundwork_backend_internal_domain_SubscriptionResponse_(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.status = source["status"];
+	        this.message = source["message"];
+	        this.data = this.convertValues(source["data"], domain.SubscriptionResponse);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Response_interface____ {
 	    status: number;
 	    message: string;
 	    data: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new Response(source);
+	        return new Response_interface____(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -21,6 +157,40 @@ export namespace commandUtils {
 
 export namespace domain {
 	
+	export class CompanyBase {
+	    name: string;
+	    area: string;
+	    tannssid: string;
+	    comments: string[];
+	    is_active: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new CompanyBase(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.area = source["area"];
+	        this.tannssid = source["tannssid"];
+	        this.comments = source["comments"];
+	        this.is_active = source["is_active"];
+	    }
+	}
+	export class CompanyResponse {
+	    id: number[];
+	    created_at: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new CompanyResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.created_at = source["created_at"];
+	    }
+	}
 	export class CreateCompanyRequest {
 	    name?: string;
 	    area?: string;
@@ -48,10 +218,8 @@ export namespace domain {
 	    tier?: string;
 	    features?: string[];
 	    status?: string;
-	    // Go type: time
-	    start_date?: any;
-	    // Go type: time
-	    end_date?: any;
+	    start_date?: string;
+	    end_date?: string;
 	    auto_renew?: boolean;
 	
 	    static createFrom(source: any = {}) {
@@ -66,28 +234,10 @@ export namespace domain {
 	        this.tier = source["tier"];
 	        this.features = source["features"];
 	        this.status = source["status"];
-	        this.start_date = this.convertValues(source["start_date"], null);
-	        this.end_date = this.convertValues(source["end_date"], null);
+	        this.start_date = source["start_date"];
+	        this.end_date = source["end_date"];
 	        this.auto_renew = source["auto_renew"];
 	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice && a.map) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
 	}
 	export class DeleteCompanyRequest {
 	    id: number[];
@@ -149,6 +299,66 @@ export namespace domain {
 	        this.company_id = source["company_id"];
 	    }
 	}
+	export class SubscriptionBase {
+	    name: string;
+	    license: string;
+	    tier: string;
+	    features: string[];
+	    status: string;
+	    start_date: string;
+	    end_date?: string;
+	    auto_renew: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new SubscriptionBase(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.license = source["license"];
+	        this.tier = source["tier"];
+	        this.features = source["features"];
+	        this.status = source["status"];
+	        this.start_date = source["start_date"];
+	        this.end_date = source["end_date"];
+	        this.auto_renew = source["auto_renew"];
+	    }
+	}
+	export class SubscriptionResponse {
+	    id: number[];
+	    company_id: number[];
+	    SubscriptionBase: SubscriptionBase;
+	
+	    static createFrom(source: any = {}) {
+	        return new SubscriptionResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.company_id = source["company_id"];
+	        this.SubscriptionBase = this.convertValues(source["SubscriptionBase"], SubscriptionBase);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
 	export class UpdateCompanyRequest {
 	    id: number[];
 	    name?: string;
@@ -178,10 +388,8 @@ export namespace domain {
 	    tier?: string;
 	    features?: string[];
 	    status?: string;
-	    // Go type: time
-	    start?: any;
-	    // Go type: time
-	    end_date?: any;
+	    start?: string;
+	    end_date?: string;
 	    auto_renew?: boolean;
 	
 	    static createFrom(source: any = {}) {
@@ -196,28 +404,10 @@ export namespace domain {
 	        this.tier = source["tier"];
 	        this.features = source["features"];
 	        this.status = source["status"];
-	        this.start = this.convertValues(source["start"], null);
-	        this.end_date = this.convertValues(source["end_date"], null);
+	        this.start = source["start"];
+	        this.end_date = source["end_date"];
 	        this.auto_renew = source["auto_renew"];
 	    }
-	
-		convertValues(a: any, classs: any, asMap: boolean = false): any {
-		    if (!a) {
-		        return a;
-		    }
-		    if (a.slice && a.map) {
-		        return (a as any[]).map(elem => this.convertValues(elem, classs));
-		    } else if ("object" === typeof a) {
-		        if (asMap) {
-		            for (const key of Object.keys(a)) {
-		                a[key] = new classs(a[key]);
-		            }
-		            return a;
-		        }
-		        return new classs(a);
-		    }
-		    return a;
-		}
 	}
 
 }

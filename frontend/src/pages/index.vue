@@ -21,11 +21,7 @@
               Abo hinzufügen
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn
-              variant="text"
-              icon="mdi-refresh"
-              @click="reloadData"
-            ></v-btn>
+            <v-btn variant="text" icon="mdi-refresh"></v-btn>
           </div>
         </v-card>
       </v-col>
@@ -155,11 +151,8 @@
         </v-card>
       </v-col>
     </v-row>
-    <CreateCompany v-model="showCreateCompanyDialog" @created="reloadData" />
-    <CreateSubscription
-      v-model="showCreateSubscriptionDialog"
-      @created="reloadData"
-    />
+    <CreateCompany v-model="showCreateCompanyDialog" />
+    <CreateSubscription v-model="showCreateSubscriptionDialog" />
   </v-container>
 </template>
 
@@ -235,8 +228,4 @@ const upcomingRenewals = ref([
     auto_renew: true,
   },
 ]);
-
-const addCompany = () => console.log("Dialog: Add Company");
-const addSubscription = () => console.log("Dialog: Add Subscription");
-const reloadData = () => console.log("Refreshing data from Go...");
 </script>

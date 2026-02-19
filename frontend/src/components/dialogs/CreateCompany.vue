@@ -61,7 +61,7 @@
               ></v-text-field>
 
               <v-sheet
-                v-if="formData.comments.length > 0"
+                v-if="formData.comments && formData.comments.length > 0"
                 border
                 rounded
                 class="pa-2 mt-2 bg-grey-lighten-5"
@@ -110,63 +110,107 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import { domain } from "../../../wailsjs/go/models";
+import { CreateCompanyCommand } from "../../../wailsjs/go/CompanyCommand/companyCommand";
+import { ProductArea } from "@/types/domain";
 
+/**
+ * Component Props and Emits
+ */
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits(["update:modelValue", "created"]);
 
+/**
+ * Internal Dialog Visibility Control
+ */
 const internalModel = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
 
+/**
+ * Form State and Configuration
+ */
 const isFormValid = ref(false);
 const loading = ref(false);
 const tempComment = ref("");
 
-const formData = ref({
-  name: "",
-  area: null,
-  tannssid: "",
-  is_active: true,
-  comments: [] as string[],
-});
+// Cast area options to bypass strict Enum-to-String validation mismatch
+const areaOptions = Object.values(ProductArea) as any;
 
-const areaOptions = ["Microtech", "HaufeX360", "Software", "IT", "Consulting"];
+/**
+ * Company Data Model (Wails domain class)
+ * Initialized with default values for CreateCompanyRequest
+ */
+const formData = ref(
+  new domain.CreateCompanyRequest({
+    name: "",
+    area: ProductArea.Software,
+    tannssid: "",
+    is_active: true,
+    comments: [],
+  }),
+);
 
-// The logic to "stack" comments
+/**
+ * Internal Note Management
+ */
 const addComment = () => {
   const val = tempComment.value.trim();
   if (val) {
-    // We push to the array, exactly what the Go slice expects
+    if (!formData.value.comments) {
+      formData.value.comments = [];
+    }
     formData.value.comments.push(val);
     tempComment.value = "";
   }
 };
 
 const removeComment = (index: number) => {
-  formData.value.comments.splice(index, 1);
+  formData.value.comments?.splice(index, 1);
+};
+
+/**
+ * Dialog Lifecycle Actions
+ */
+const resetForm = () => {
+  formData.value = new domain.CreateCompanyRequest({
+    name: "",
+    area: ProductArea.Software,
+    tannssid: "",
+    is_active: true,
+    comments: [],
+  });
 };
 
 const close = () => {
   internalModel.value = false;
-  formData.value = {
-    name: "",
-    area: null,
-    tannssid: "",
-    is_active: true,
-    comments: [],
-  };
+  resetForm();
 };
 
+/**
+ * Backend Operations
+ */
 const submit = async () => {
-  loading.value = true;
-  // This sends the full object including the comments array to your Go backend
-  console.log("Sending CreateCompanyRequest to Wails:", formData.value);
+  if (!isFormValid.value) return;
 
-  setTimeout(() => {
-    loading.value = false;
+  loading.value = true;
+  try {
+    // Send CreateCompanyRequest instance to Go backend
+    const result = await CreateCompanyCommand(formData.value);
+
+    // Validate backend response status (expecting 201 Created)
+    if (result.status !== 201) {
+      throw new Error(result.message || "Fehler beim Erstellen des Kunden");
+    }
+
+    // Refresh parent state and close dialog
     emit("created");
     close();
-  }, 800);
+  } catch (err) {
+    console.error("Company creation error:", err);
+  } finally {
+    loading.value = false;
+  }
 };
 </script>

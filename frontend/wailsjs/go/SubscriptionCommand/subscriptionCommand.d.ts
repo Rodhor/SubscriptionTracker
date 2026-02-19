@@ -3,12 +3,12 @@
 import {domain} from '../models';
 import {commandUtils} from '../models';
 
-export function CreateSubscriptionCommand(arg1:domain.CreateSubscriptionRequest):Promise<commandUtils.Response>;
+export function CreateSubscriptionCommand(arg1:domain.CreateSubscriptionRequest):Promise<commandUtils.Response_Groundwork_backend_internal_domain_SubscriptionResponse_>;
 
-export function DeleteSubscriptionCommand(arg1:domain.DeleteSubscriptionRequest):Promise<commandUtils.Response>;
+export function DeleteSubscriptionCommand(arg1:domain.DeleteSubscriptionRequest):Promise<commandUtils.Response_interface____>;
 
-export function GetSubscriptionCommand(arg1:domain.GetSubscriptionRequest):Promise<commandUtils.Response>;
+export function GetSubscriptionCommand(arg1:domain.GetSubscriptionRequest):Promise<commandUtils.Response_Groundwork_backend_internal_domain_SubscriptionResponse_>;
 
-export function ListSubscriptionsCommand():Promise<commandUtils.Response>;
+export function ListSubscriptionsCommand():Promise<commandUtils.Response___Groundwork_backend_internal_domain_SubscriptionResponse_>;
 
-export function UpdateSubscriptionCommand(arg1:domain.UpdateSubscriptionRequest):Promise<commandUtils.Response>;
+export function UpdateSubscriptionCommand(arg1:domain.UpdateSubscriptionRequest):Promise<commandUtils.Response_interface____>;

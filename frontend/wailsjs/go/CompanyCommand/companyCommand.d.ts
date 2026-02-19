@@ -3,14 +3,14 @@
 import {domain} from '../models';
 import {commandUtils} from '../models';
 
-export function CreateCompanyCommand(arg1:domain.CreateCompanyRequest):Promise<commandUtils.Response>;
+export function CreateCompanyCommand(arg1:domain.CreateCompanyRequest):Promise<commandUtils.Response_Groundwork_backend_internal_domain_CompanyResponse_>;
 
-export function DeleteCompanyCommand(arg1:domain.DeleteCompanyRequest):Promise<commandUtils.Response>;
+export function DeleteCompanyCommand(arg1:domain.DeleteCompanyRequest):Promise<commandUtils.Response_interface____>;
 
-export function GetCompanyCommand(arg1:domain.GetCompanyRequest):Promise<commandUtils.Response>;
+export function GetCompanyCommand(arg1:domain.GetCompanyRequest):Promise<commandUtils.Response_Groundwork_backend_internal_domain_CompanyResponse_>;
 
-export function ListCompaniesCommand():Promise<commandUtils.Response>;
+export function ListCompaniesCommand():Promise<commandUtils.Response___Groundwork_backend_internal_domain_CompanyResponse_>;
 
-export function ListCompanySubscriptionsCommand(arg1:domain.ListCompanySubscriptionsRequest):Promise<commandUtils.Response>;
+export function ListCompanySubscriptionsCommand(arg1:domain.ListCompanySubscriptionsRequest):Promise<commandUtils.Response___Groundwork_backend_internal_domain_SubscriptionResponse_>;
 
-export function UpdateCompanyCommand(arg1:domain.UpdateCompanyRequest):Promise<commandUtils.Response>;
+export function UpdateCompanyCommand(arg1:domain.UpdateCompanyRequest):Promise<commandUtils.Response_interface____>;

@@ -149,72 +149,149 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { domain } from "../../../wailsjs/go/models";
+import { ListCompaniesCommand } from "../../../wailsjs/go/CompanyCommand/companyCommand";
+import { CreateSubscriptionCommand } from "../../../wailsjs/go/SubscriptionCommand/subscriptionCommand";
+import { SubscriptionTier, SubscriptionStatus } from "@/types/domain";
 
+/**
+ * Component Props and Emits
+ */
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits(["update:modelValue", "created"]);
 
+/**
+ * Internal Dialog Visibility Control
+ */
 const internalModel = computed({
   get: () => props.modelValue,
   set: (val) => emit("update:modelValue", val),
 });
 
-// State
+/**
+ * Form State and Configuration
+ */
 const isFormValid = ref(false);
-const showLicense = ref(false);
 const loading = ref(false);
+const showLicense = ref(false);
 const tempFeature = ref("");
-const companies = ref<{ name: string; id: string }[]>([]); // To be filled from backend
+const companies = ref<{ name: string; id: string }[]>([]);
 
-// Data structure matches CreateSubscriptionRequest
-const formData = ref({
-  company_id: null,
-  name: "",
-  license: "",
-  tier: "Core",
-  features: [] as string[],
-  status: "Active",
-  start_date: new Date().toISOString().substr(0, 10),
-  end_date: null,
-  auto_renew: true,
-});
+const tierOptions = Object.values(SubscriptionTier) as any;
+const statusOptions = Object.values(SubscriptionStatus) as any;
 
-// Enums from your Go domain
-const tierOptions = ["Core", "Enterprise", "Enterprise API"];
-const statusOptions = ["Active", "Inactive", "Cancelled", "Pending", "Expired"];
+/**
+ * Subscription Data Model (Wails domain class)
+ */
+const formData = ref(
+  new domain.CreateSubscriptionRequest({
+    company_id: "",
+    name: "",
+    license: "",
+    tier: SubscriptionTier.Core,
+    features: [],
+    status: SubscriptionStatus.Active,
+    start_date: new Date().toISOString().substring(0, 10),
+    end_date: null,
+    auto_renew: true,
+  }),
+);
 
+/**
+ * Form Field Actions
+ */
 const addFeature = () => {
-  if (tempFeature.value.trim()) {
-    formData.value.features.push(tempFeature.value.trim());
+  const val = tempFeature.value.trim();
+  if (val) {
+    if (!formData.value.features) {
+      formData.value.features = [];
+    }
+    formData.value.features.push(val);
     tempFeature.value = "";
   }
 };
 
 const removeFeature = (index: number) => {
-  formData.value.features.splice(index, 1);
+  formData.value.features?.splice(index, 1);
+};
+
+/**
+ * Dialog Lifecycle Actions
+ */
+const resetForm = () => {
+  formData.value = new domain.CreateSubscriptionRequest({
+    company_id: "",
+    name: "",
+    license: "",
+    tier: SubscriptionTier.Core,
+    features: [],
+    status: SubscriptionStatus.Active,
+    start_date: new Date().toISOString().substring(0, 10),
+    end_date: null,
+    auto_renew: true,
+  });
 };
 
 const close = () => {
   internalModel.value = false;
-  // Reset logic...
+  resetForm();
 };
 
+/**
+ * Backend Operations
+ */
 const submit = async () => {
+  if (!isFormValid.value) return;
+
   loading.value = true;
-  console.log("Sending CreateSubscriptionRequest:", formData.value);
-  // Call Wails backend here
-  setTimeout(() => {
-    loading.value = false;
+  try {
+    // Clone the form data so we don't mess up the UI binding
+    const payload = { ...formData.value };
+
+    // Append Time and Z (UTC) suffix to satisfy Go's time.Time parser
+    if (payload.start_date && !payload.start_date.includes("T")) {
+      payload.start_date = `${payload.start_date}T00:00:00Z`;
+    }
+
+    if (payload.end_date && !payload.end_date.includes("T")) {
+      payload.end_date = `${payload.end_date}T00:00:00Z`;
+    } else if (!payload.end_date) {
+      // Ensure null is handled if the backend expects a pointer or omitempty
+      payload.end_date = undefined;
+    }
+
+    const result = await CreateSubscriptionCommand(payload);
+
+    if (result.status !== 201) {
+      throw new Error(result.message || "Failed to create subscription");
+    }
+
     emit("created");
     close();
-  }, 1000);
+  } catch (err) {
+    console.error("Subscription creation error:", err);
+  } finally {
+    loading.value = false;
+  }
 };
 
-// Lifecycle: Fetch companies so we can populate the dropdown
+/**
+ * Initialization Logic
+ */
 onMounted(async () => {
-  // Mock data - in reality: companies.value = await ListCompaniesCommand()
-  companies.value = [
-    { name: "Müller IT", id: "uuid-1" },
-    { name: "Schmidt KG", id: "uuid-2" },
-  ];
+  try {
+    const result = await ListCompaniesCommand();
+
+    if (result.status === 200 && Array.isArray(result.data)) {
+      // Map the nested Go structure to a flat list for the dropdown
+      companies.value = result.data.map((c: any) => ({
+        // We look for 'name' inside CompanyBase, fallback to 'name'
+        name: c.CompanyBase?.name || c.name || "Unbekannter Kunde",
+        id: c.id,
+      }));
+    }
+  } catch (err) {
+    console.error("Initialization error (Company List):", err);
+  }
 });
 </script>
