@@ -35,8 +35,8 @@ type SubscriptionBase struct {
 	Tier      SubscriptionTier   `json:"tier"`
 	Features  []string           `json:"features"`
 	Status    SubscriptionStatus `json:"status"`
-	StartDate time.Time          `json:"start_date"`
-	EndDate   *time.Time         `json:"end_date"`
+	StartDate time.Time          `json:"start_date" ts_type:"string"`
+	EndDate   *time.Time         `json:"end_date" ts_type:"string"`
 	AutoRenew bool               `json:"auto_renew"`
 }
 
@@ -48,9 +48,9 @@ type Subscription struct {
 	ID               uuid.UUID `json:"id"`
 	CompanyID        uuid.UUID `json:"company_id"`
 	SubscriptionBase SubscriptionBase
-	CreatedAt        time.Time  `json:"created_at"`
-	UpdatedAt        time.Time  `json:"updated_at"`
-	DeletedAt        *time.Time `json:"deleted_at"`
+	CreatedAt        time.Time  `json:"created_at" ts_type:"string"`
+	UpdatedAt        time.Time  `json:"updated_at" ts_type:"string"`
+	DeletedAt        *time.Time `json:"deleted_at" ts_type:"string"`
 }
 
 func (s *Subscription) Sanitize() *SubscriptionResponse {
@@ -80,8 +80,8 @@ type CreateSubscriptionRequest struct {
 	Tier      *SubscriptionTier   `json:"tier,omitempty"`
 	Features  *[]string           `json:"features,omitempty"`
 	Status    *SubscriptionStatus `json:"status,omitempty"`
-	StartDate *time.Time          `json:"start_date,omitempty"`
-	EndDate   *time.Time          `json:"end_date,omitempty"`
+	StartDate *time.Time          `json:"start_date,omitempty" ts_type:"string"`
+	EndDate   *time.Time          `json:"end_date,omitempty" ts_type:"string"`
 	AutoRenew *bool               `json:"auto_renew,omitempty"`
 }
 
@@ -93,8 +93,8 @@ type UpdateSubscriptionRequest struct {
 	Tier      *SubscriptionTier   `json:"tier,omitempty"`
 	Features  *[]string           `json:"features,omitempty"`
 	Status    *SubscriptionStatus `json:"status,omitempty"`
-	StartDate *time.Time          `json:"start,omitempty"`
-	EndDate   *time.Time          `json:"end_date,omitempty"`
+	StartDate *time.Time          `json:"start,omitempty" ts_type:"string"`
+	EndDate   *time.Time          `json:"end_date,omitempty" ts_type:"string"`
 	AutoRenew *bool               `json:"auto_renew,omitempty"`
 }
 

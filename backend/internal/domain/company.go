@@ -38,9 +38,9 @@ type CompanyBase struct {
 type Company struct {
 	ID          uuid.UUID `json:"id"`
 	CompanyBase CompanyBase
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
+	CreatedAt   time.Time  `json:"created_at" ts_type:"string"`
+	UpdatedAt   time.Time  `json:"updated_at" ts_type:"string"`
+	DeletedAt   *time.Time `json:"deleted_at" ts_type:"string"`
 }
 
 // Sanitize prepares the company data for the frontend.

@@ -3,7 +3,6 @@ package main
 import (
 	Backend "Groundwork/backend"
 	"context"
-	"fmt"
 )
 
 // App struct
@@ -41,9 +40,4 @@ func (a *App) beforeClose(ctx context.Context) (prevent bool) {
 // shutdown is called at application termination
 func (a *App) shutdown(ctx context.Context) {
 	// Perform your teardown here
-}
-
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
